@@ -37,7 +37,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="5dp"
                 android:layout_weight="1"
-                android:text="@string/start_button" />
+                android:text="@string/start_button"
+                android:onClick="onControlPanelClick"/>
 
             <Button
                 android:id="@+id/btnPause"
@@ -45,7 +46,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="5dp"
                 android:layout_weight="1"
-                android:text="@string/pause_button" />
+                android:text="@string/pause_button"
+                android:onClick="onControlPanelClick"/>
         </LinearLayout>
 
         <LinearLayout
@@ -59,7 +61,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="5dp"
                 android:layout_weight="1"
-                android:text="@string/previous_button" />
+                android:text="@string/previous_button"
+                android:onClick="onControlPanelClick"/>
 
             <Button
                 android:id="@+id/btnNext"
@@ -67,7 +70,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="5dp"
                 android:layout_weight="1"
-                android:text="@string/next_button" />
+                android:text="@string/next_button"
+                android:onClick="onControlPanelClick"/>
 
         </LinearLayout>
 
