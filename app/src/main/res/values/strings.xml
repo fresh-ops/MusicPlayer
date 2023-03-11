@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Music player</string>
+    <string name="start_button">Старт</string>
+    <string name="pause_button">Пауза</string>
+    <string name="next_button">След.</string>
+    <string name="previous_button">Пред.</string>
 </resources>
