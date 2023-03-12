@@ -7,6 +7,8 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +16,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
     private TextView nowPlaying;
+    private Switch switchLoop;
 
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
@@ -27,6 +30,13 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         setContentView(R.layout.activity_main);
 
         nowPlaying = findViewById(R.id.nowPlaying);
+        switchLoop = findViewById(R.id.switchLoop);
+        switchLoop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mediaPlayer != null) mediaPlayer.setLooping(isChecked);
+            }
+        });
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         playlistHolder = new PlaylistHolder(musicLocation, getSongsList());
@@ -99,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
             }
         }
         else mediaPlayer.start();
+        mediaPlayer.setLooping(switchLoop.isChecked());
         nowPlaying.setText("Локальная музыка");
     }
 
@@ -123,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
+        if (mediaPlayer.isLooping()) return;
+
         mediaPlayer.stop();
         mediaPlayer.reset();
 
