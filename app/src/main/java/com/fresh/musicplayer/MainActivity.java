@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private AudioManager audioManager;
 
     private final String musicLocation = "local/music";
+    private PlaylistHolder playlistHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         nowPlaying = findViewById(R.id.nowPlaying);
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        playlistHolder = new PlaylistHolder(musicLocation, getSongsList());
     }
 
     @Override
@@ -44,24 +46,68 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btnPause:
                 mediaPlayer.pause();
                 break;
+            case R.id.btnNext:
+                if (mediaPlayer != null) {
+                    try {
+                        mediaPlayer.stop();
+                        mediaPlayer.reset();
+
+                        AssetFileDescriptor afd = getAssets().openFd(playlistHolder.next());
+                        mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                        afd.close();
+
+                        mediaPlayer.prepare();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    mediaPlayer.start();
+                }
+                break;
+            case R.id.btnPrev:
+                if (mediaPlayer != null) {
+                    try {
+                        mediaPlayer.stop();
+                        mediaPlayer.reset();
+
+                        AssetFileDescriptor afd = getAssets().openFd(playlistHolder.previous());
+                        mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                        afd.close();
+
+                        mediaPlayer.prepare();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    mediaPlayer.start();
+                }
+                break;
+
         }
     }
 
     public void runLocalMusic() {
-        Toast.makeText(this, "Проигрывается локальная музыка", Toast.LENGTH_SHORT).show();
         if (mediaPlayer == null) {
+            Toast.makeText(this, "Проигрывается локальная музыка", Toast.LENGTH_SHORT).show();
             mediaPlayer = new MediaPlayer();
             try {
-                AssetFileDescriptor afd = getAssets().openFd(musicLocation + "/the_phoenix.mp3");
+                AssetFileDescriptor afd = getAssets().openFd(playlistHolder.next());
                 mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
                 afd.close();
+
                 mediaPlayer.prepare();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
         mediaPlayer.start();
-        nowPlaying.setText("Fall Out Boy - The Phoenix");
+        nowPlaying.setText("Локальная музыка");
+    }
+
+    private String[]  getSongsList() {
+        try {
+            return getAssets().list(musicLocation);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void releaseMediaPlayer() {
