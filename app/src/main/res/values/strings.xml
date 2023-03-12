@@ -5,4 +5,7 @@
     <string name="next_button">След.</string>
     <string name="previous_button">Пред.</string>
     <string name="switch_loop">Повтор</string>
+    <string name="source_title">Источник</string>
+    <string name="radio_button">Радио</string>
+    <string name="local_button">Из памяти</string>
 </resources>
