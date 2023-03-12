@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
     private TextView nowPlaying;
 
     private MediaPlayer mediaPlayer;
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    mediaPlayer.start();
                 }
                 break;
             case R.id.btnPrev:
@@ -77,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    mediaPlayer.start();
                 }
                 break;
 
@@ -88,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
         if (mediaPlayer == null) {
             Toast.makeText(this, "Проигрывается локальная музыка", Toast.LENGTH_SHORT).show();
             mediaPlayer = new MediaPlayer();
+            mediaPlayer.setOnPreparedListener(this);
+            mediaPlayer.setOnCompletionListener(this);
             try {
                 AssetFileDescriptor afd = getAssets().openFd(playlistHolder.next());
                 mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
         }
-        mediaPlayer.start();
+        else mediaPlayer.start();
         nowPlaying.setText("Локальная музыка");
     }
 
@@ -119,5 +119,26 @@ public class MainActivity extends AppCompatActivity {
                 ex.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        mediaPlayer.stop();
+        mediaPlayer.reset();
+
+        try {
+            AssetFileDescriptor afd = getAssets().openFd(playlistHolder.next());
+            mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            afd.close();
+
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mediaPlayer) {
+        mediaPlayer.start();
     }
 }
