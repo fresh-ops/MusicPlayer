@@ -3,7 +3,6 @@ package com.fresh.musicplayer;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.AssetFileDescriptor;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -13,13 +12,16 @@ import android.widget.TextView;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
+    private final String MUSIC_LOCATION = "local/music";
+    private final String RADIO_URL = "https://pub0301.101.ru:8443/stream/air/mp3/256/99";
+    private final int RADIO = 0;
+    private final int LOCAL_MUSIC = 1;
+
     private TextView nowPlaying;
 
     private MediaPlayer mediaPlayer;
-
-    private final String musicLocation = "local/music";
-    private final String RADIO = "https://pub0301.101.ru:8443/stream/air/mp3/256/99";
     private PlaylistHolder playlistHolder;
+    private int contentType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
             if (mediaPlayer != null) mediaPlayer.setLooping(isChecked);
         });
 
-        playlistHolder = new PlaylistHolder(musicLocation, getSongsList());
+        playlistHolder = new PlaylistHolder(MUSIC_LOCATION, getSongsList());
     }
 
     @Override
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                 mediaPlayer.pause();
                 break;
             case R.id.btnNext:
-                if (mediaPlayer != null) {
+                if (mediaPlayer != null && contentType == LOCAL_MUSIC) {
                     try {
                         mediaPlayer.stop();
                         mediaPlayer.reset();
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                 }
                 break;
             case R.id.btnPrev:
-                if (mediaPlayer != null) {
+                if (mediaPlayer != null && contentType == LOCAL_MUSIC) {
                     try {
                         mediaPlayer.stop();
                         mediaPlayer.reset();
@@ -95,10 +97,12 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
         switch (view.getId()) {
             case R.id.btnRadio:
+                contentType = RADIO;
+
                 try {
                     mediaPlayer = new MediaPlayer();
 
-                    mediaPlayer.setDataSource(RADIO);
+                    mediaPlayer.setDataSource(RADIO_URL);
                     mediaPlayer.setOnPreparedListener(this);
                     mediaPlayer.prepareAsync();
 
@@ -108,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                 }
                 break;
             case R.id.btnLocal:
+                contentType = LOCAL_MUSIC;
+
                 try {
                     mediaPlayer = new MediaPlayer();
                     mediaPlayer.setOnPreparedListener(this);
@@ -129,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
     private String[]  getSongsList() {
         try {
-            return getAssets().list(musicLocation);
+            return getAssets().list(MUSIC_LOCATION);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -148,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        if (mediaPlayer.isLooping()) return;
+        if (mediaPlayer.isLooping() || contentType == RADIO) return;
 
         mediaPlayer.stop();
         mediaPlayer.reset();
