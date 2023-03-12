@@ -2,6 +2,7 @@ package com.fresh.musicplayer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
+
+    private final String musicLocation = "local/music";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void runLocalMusic() {
         Toast.makeText(this, "Проигрывается локальная музыка", Toast.LENGTH_SHORT).show();
-        mediaPlayer = MediaPlayer.create(this, R.raw.the_phoenix);
+        if (mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer();
+            try {
+                AssetFileDescriptor afd = getAssets().openFd(musicLocation + "/the_phoenix.mp3");
+                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                afd.close();
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         mediaPlayer.start();
         nowPlaying.setText("Fall Out Boy - The Phoenix");
     }
