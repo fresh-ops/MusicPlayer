@@ -82,6 +82,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:contentDescription="@string/previous_button"
+                android:onClick="onControlPanelClick"
                 android:padding="1dp"
                 app:backgroundTint="@color/pink_400"
                 app:srcCompat="@android:drawable/ic_media_previous"
@@ -94,6 +95,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:contentDescription="@string/pause_button"
+                android:onClick="onControlPanelClick"
                 app:backgroundTint="@color/pink_400"
                 app:fabCustomSize="80dp"
                 app:fabSize="auto"
@@ -107,6 +109,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:contentDescription="@string/next_button"
+                android:onClick="onControlPanelClick"
                 app:backgroundTint="@color/pink_400"
                 app:srcCompat="@android:drawable/ic_media_next"
                 app:useCompatPadding="true" />

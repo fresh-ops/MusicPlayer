@@ -14,12 +14,21 @@ public class PlaylistHolder {
     }
 
     /**
+     * Метод получения пути текущего трека
+     * @return путь текущего трека
+     */
+    public String current() {
+        return path + '/' + playlist[ind];
+    }
+
+    /**
      * Метод получения пути следующего трека. Увеличивает индекс плэйлиста на 1
      * @return путь следующего трека
      */
     public String next() {
         ind++;
-        return path + '/' + playlist[ind % playlist.length];
+        if (ind >= playlist.length) ind = 0;
+        return path + '/' + playlist[ind];
     }
 
     /**
@@ -28,6 +37,7 @@ public class PlaylistHolder {
      */
     public String previous() {
         ind--;
-        return path + '/' + playlist[ind % playlist.length];
+        if (ind < 0) ind = playlist.length;
+        return path + '/' + playlist[ind];
     }
 }
