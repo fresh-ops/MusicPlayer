@@ -22,16 +22,12 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
     private PlaylistHolder playlistHolder;
     private SeekBar seekBar;
     private TextView playingTime;
+    private boolean isLooping = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        Switch switchLoop = findViewById(R.id.switchLoop);
-//        switchLoop.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//            if (mediaPlayer != null) mediaPlayer.setLooping(isChecked);
-//        });
 
         playlistHolder = new PlaylistHolder(MUSIC_LOCATION, getSongsList());
         seekBar = findViewById(R.id.seekBar);
@@ -119,7 +115,17 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                     }
                 }
                 break;
-
+            case R.id.fabRepeat:
+                isLooping = ! isLooping;
+                if (mediaPlayer != null) mediaPlayer.setLooping(isLooping);
+                FloatingActionButton fabRepeat = findViewById(R.id.fabRepeat);
+                if (isLooping) {
+                    fabRepeat.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.repeat_single));
+                }
+                else {
+                    fabRepeat.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.repeat));
+                }
+                break;
         }
     }
 
@@ -129,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setOnCompletionListener(this);
+            mediaPlayer.setLooping(isLooping);
 
             AssetFileDescriptor afd = getAssets().openFd(playlistHolder.next());
             mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());

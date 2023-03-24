@@ -72,8 +72,21 @@
             android:id="@+id/buttonsList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabRepeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:contentDescription="@string/switch_loop"
+                android:cropToPadding="false"
+                android:onClick="onControlPanelClick"
+                app:backgroundTint="@color/pink_300"
+                app:srcCompat="@drawable/repeat"
+                app:useCompatPadding="true" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabPrevious"
@@ -83,7 +96,6 @@
                 android:clickable="true"
                 android:contentDescription="@string/previous_button"
                 android:onClick="onControlPanelClick"
-                android:padding="1dp"
                 app:backgroundTint="@color/pink_400"
                 app:srcCompat="@android:drawable/ic_media_previous"
                 app:useCompatPadding="true" />
@@ -95,6 +107,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:contentDescription="@string/pause_button"
+                android:fadeScrollbars="false"
                 android:onClick="onControlPanelClick"
                 app:backgroundTint="@color/pink_400"
                 app:fabCustomSize="80dp"
